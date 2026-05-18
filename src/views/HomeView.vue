@@ -82,7 +82,7 @@ function onToggleCategory(category, checked) {
         </div>
       </div>
 
-      <button class="ghost-btn reset-btn" @click="store.resetAllStats">🗑️ 통계 초기화</button>
+      <button class="ghost-btn reset-btn" @click="store.resetAllStats">🗑️ 초기화</button>
     </section>
 
     <FoodCard :food="store.currentFood" :emptyMessage="store.emptyMessage" />
@@ -93,7 +93,7 @@ function onToggleCategory(category, checked) {
 
     <ResultCard :confirmedFood="store.confirmedFood" @restart="onRestart" />
 
-    <details class="stats stats-accordion">
+    <!-- <details class="stats stats-accordion">
       <summary>통계 보기</summary>
       <div class="stats-content">
         <p>오늘 확정 횟수: {{ store.picksToday }}회</p>
@@ -103,7 +103,7 @@ function onToggleCategory(category, checked) {
         </ul>
         <p v-if="store.recentConfirmedFoods.length === 0" class="placeholder">아직 확정된 메뉴가 없어요.</p>
       </div>
-    </details>
+    </details> -->
     <p class="placeholder">메뉴는 지속적으로 추가될 예정입니다.</p>
   </main>
 </template>

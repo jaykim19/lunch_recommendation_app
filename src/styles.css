@@ -239,6 +239,5 @@ li {
 @media (max-width: 560px) {
   .reset-btn {
     margin-left: 0;
-    width: 40%;
   }
 }
