@@ -12,7 +12,7 @@ const categorySelectRef = ref(null);
 const selectedCategorySet = computed(() => new Set(store.selectedCategories));
 const categorySummary = computed(() =>
   store.selectedCategories.length === 0
-    ? "전체 메뉴"
+    ? "전체 메뉴에서 선택합니다."
     : `${store.selectedCategories.length}개 선택`,
 );
 
