@@ -19,7 +19,11 @@ defineProps({
       <p class="food-category">{{ food.category }}</p>
     </div>
     <p v-else class="placeholder">
-      {{ emptyMessage || "아직 메뉴를 뽑지 않았어요. 메뉴 뽑기 버튼을 눌러보세요!" }}
+      <template v-if="emptyMessage">{{ emptyMessage }}</template>
+      <template v-else>
+        아직 메뉴를 뽑지 않았어요.<br />
+        메뉴 뽑기 버튼을 눌러보세요!
+      </template>
     </p>
   </section>
 </template>

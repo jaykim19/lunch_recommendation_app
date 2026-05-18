@@ -124,5 +124,10 @@ function onEscapeKeyDown(event) {
       </div>
     </details> -->
     <p class="placeholder">메뉴는 지속적으로 추가될 예정입니다.</p>
+
+    <footer class="app-footer">
+      <p class="creator-text">기획/개발: 김지영, 윤혜준</p>
+      <p class="copyright-text">2026 브릿지듀오 &copy; All Copyrights Reserved.</p>
+    </footer>
   </main>
 </template>
