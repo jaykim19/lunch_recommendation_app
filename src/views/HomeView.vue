@@ -78,7 +78,7 @@ function onEscapeKeyDown(event) {
     </header>
 
     <section class="toolbar">
-      <label for="">카테고리</label>
+      <!-- <label for="">카테고리</label> -->
       <div ref="categorySelectRef" class="category-select-wrap">
         <button
           id="category-select-trigger"
@@ -127,7 +127,7 @@ function onEscapeKeyDown(event) {
 
     <footer class="app-footer">
       <p class="creator-text">기획/개발: 김지영, 윤혜준</p>
-      <p class="copyright-text">2026 브릿지듀오 &copy; All Copyrights Reserved.</p>
+      <p class="copyright-text">Copyright &copy; 2026 브릿지듀오  All rights reserved.</p>
     </footer>
   </main>
 </template>
