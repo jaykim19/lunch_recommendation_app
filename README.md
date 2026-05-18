@@ -1,0 +1,46 @@
+# 🍱 오늘의 한끼픽
+
+점심 메뉴를 빠르게 고를 수 있도록 도와주는 Vue 기반 랜덤 추천 앱입니다.
+카테고리를 체크박스로 여러 개 선택한 뒤, 선택한 범위 안에서 메뉴를 랜덤으로 뽑을 수 있습니다.
+
+## 주요 기능
+
+- **랜덤 메뉴 추천**: 버튼 클릭으로 오늘의 메뉴를 무작위 추천
+- **다중 카테고리 필터**: 체크박스로 카테고리 여러 개 선택 가능
+- **메뉴 확정/거절**: 추천 메뉴를 확정하거나 다시 뽑기 가능
+- **통계 아코디언**: 오늘 확정 횟수와 최근 확정 메뉴를 접고 펼쳐서 확인
+- **로컬 저장**: 새로고침 후에도 선택 상태와 통계가 유지됨
+
+## 기술 스택
+
+- Vue 3
+- Pinia
+- Vite
+
+## 실행 방법
+
+```bash
+npm install
+npm run dev
+```
+
+## 빌드
+
+```bash
+npm run build
+npm run preview
+```
+
+## 스크린샷
+
+아래 경로에 캡처 이미지를 추가한 뒤 파일명만 맞추면 README에서 바로 확인할 수 있습니다.
+
+```text
+docs/screenshots/main.png
+docs/screenshots/category-filter.png
+docs/screenshots/stats-accordion.png
+```
+
+![메인 화면](docs/screenshots/main.png)
+![카테고리 다중 선택](docs/screenshots/category-filter.png)
+![통계 아코디언](docs/screenshots/stats-accordion.png)
