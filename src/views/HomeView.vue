@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, ref } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 import FoodCard from "../components/FoodCard.vue";
 import RouletteButton from "../components/RouletteButton.vue";
 import ChoiceButtons from "../components/ChoiceButtons.vue";
@@ -8,6 +8,7 @@ import { useFoodStore } from "../stores/foodStore";
 
 const store = useFoodStore();
 const showCategoryOptions = ref(false);
+const categorySelectRef = ref(null);
 const selectedCategorySet = computed(() => new Set(store.selectedCategories));
 const categorySummary = computed(() =>
   store.selectedCategories.length === 0
@@ -17,6 +18,13 @@ const categorySummary = computed(() =>
 
 onMounted(() => {
   store.loadState();
+  document.addEventListener("pointerdown", onOutsidePointerDown);
+  document.addEventListener("keydown", onEscapeKeyDown);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener("pointerdown", onOutsidePointerDown);
+  document.removeEventListener("keydown", onEscapeKeyDown);
 });
 
 function onPick() {
@@ -43,6 +51,17 @@ function onToggleCategory(category, checked) {
 
   store.setSelectedCategories([...next]);
 }
+
+function onOutsidePointerDown(event) {
+  if (!showCategoryOptions.value) return;
+  if (categorySelectRef.value?.contains(event.target)) return;
+  showCategoryOptions.value = false;
+}
+
+function onEscapeKeyDown(event) {
+  if (event.key !== "Escape") return;
+  showCategoryOptions.value = false;
+}
 </script>
 
 <template>
@@ -60,7 +79,7 @@ function onToggleCategory(category, checked) {
 
     <section class="toolbar">
       <label for="">카테고리</label>
-      <div class="category-select-wrap">
+      <div ref="categorySelectRef" class="category-select-wrap">
         <button
           id="category-select-trigger"
           class="category-select-trigger"
