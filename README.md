@@ -30,17 +30,3 @@ npm run dev
 npm run build
 npm run preview
 ```
-
-## 스크린샷
-
-아래 경로에 캡처 이미지를 추가한 뒤 파일명만 맞추면 README에서 바로 확인할 수 있습니다.
-
-```text
-docs/screenshots/main.png
-docs/screenshots/category-filter.png
-docs/screenshots/stats-accordion.png
-```
-
-![메인 화면](docs/screenshots/main.png)
-![카테고리 다중 선택](docs/screenshots/category-filter.png)
-![통계 아코디언](docs/screenshots/stats-accordion.png)
