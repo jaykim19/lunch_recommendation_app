@@ -19,6 +19,7 @@ li {
 
 .layout {
   min-height: 100vh;
+  min-width: 300px;
   display: flex;
   flex-direction: column;
   max-width: 720px;
@@ -187,6 +188,8 @@ li {
   font-weight: 700;
   transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
   width: 100%;
+  /* 임시 추가 */
+  margin-top: 0.5rem;
 }
 
 .reset-btn:hover {

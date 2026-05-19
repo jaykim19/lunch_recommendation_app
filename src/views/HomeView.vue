@@ -12,8 +12,8 @@ const categorySelectRef = ref(null);
 const selectedCategorySet = computed(() => new Set(store.selectedCategories));
 const categorySummary = computed(() =>
   store.selectedCategories.length === 0
-    ? "전체 메뉴에서 선택합니다."
-    : `${store.selectedCategories.length}개 선택`,
+    ? "전체 항목에서 메뉴 랜덤 선택"
+    : `선택된 카테고리에서 메뉴 랜덤 선택 (${store.selectedCategories.length}개)`,
 );
 
 onMounted(() => {
@@ -101,12 +101,14 @@ function onEscapeKeyDown(event) {
         </div>
       </div>
 
-      <button class="ghost-btn reset-btn" @click="store.resetAllStats">🗑️ 초기화</button>
+      <!-- <button class="ghost-btn reset-btn" @click="store.resetAllStats">🗑️ 초기화</button> -->
     </section>
 
     <FoodCard :food="store.currentFood" :emptyMessage="store.emptyMessage" />
 
     <RouletteButton :disabled="!store.hasAvailableFoods" @pick="onPick" />
+
+    <button class="ghost-btn reset-btn" @click="store.resetAllStats">초기화</button>
 
     <ChoiceButtons :disabled="!store.currentFood || !!store.confirmedFood" @confirm="onConfirm" @reject="onReject" />
 
@@ -123,10 +125,10 @@ function onEscapeKeyDown(event) {
         <p v-if="store.recentConfirmedFoods.length === 0" class="placeholder">아직 확정된 메뉴가 없어요.</p>
       </div>
     </details> -->
-    <p class="placeholder">메뉴는 지속적으로 추가될 예정입니다.</p>
+    <p class="placeholder">메뉴 종류는 계속 업데이트 될 예정입니다.</p>
 
     <footer class="app-footer">
-      <p class="creator-text">기획/개발: 김지영, 윤혜준</p>
+      <!-- <p class="creator-text">기획/개발: 김지영, 윤혜준</p> -->
       <p class="copyright-text">Copyright &copy; 2026 브릿지듀오  All rights reserved.</p>
     </footer>
   </main>
