@@ -122,9 +122,10 @@ li {
   border-radius: 14px;
   background: #ffffff;
   padding: 1.2rem;
-  margin-top: 1rem;
+  margin-top: -0.2rem;
   box-shadow: 0 8px 18px rgba(167, 139, 250, 0.12);
   text-align: center;
+  height: 142px;
 }
 
 .card-label {
