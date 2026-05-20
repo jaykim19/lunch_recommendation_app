@@ -41,7 +41,7 @@ function onPick() {
   isPicking.value = true;
   store.resetRound();
 
-  const delay = 3000 + Math.floor(Math.random() * 1000);
+  const delay = 1500 + Math.floor(Math.random() * 1000);
   pickTimeoutId.value = window.setTimeout(() => {
     store.pickRandomFood();
     isPicking.value = false;
