@@ -9,7 +9,11 @@ import { useFoodStore } from "../stores/foodStore";
 const store = useFoodStore();
 const showCategoryOptions = ref(false);
 const categorySelectRef = ref(null);
+const isPicking = ref(false);
+const pickTimeoutId = ref(null);
 const selectedCategorySet = computed(() => new Set(store.selectedCategories));
+const displayFood = computed(() => (isPicking.value ? null : store.currentFood));
+const displayEmptyMessage = computed(() => store.emptyMessage);
 const categorySummary = computed(() =>
   store.selectedCategories.length === 0
     ? "전체 항목에서 메뉴 랜덤 선택"
@@ -25,10 +29,24 @@ onMounted(() => {
 onBeforeUnmount(() => {
   document.removeEventListener("pointerdown", onOutsidePointerDown);
   document.removeEventListener("keydown", onEscapeKeyDown);
+  if (pickTimeoutId.value) {
+    clearTimeout(pickTimeoutId.value);
+    pickTimeoutId.value = null;
+  }
 });
 
 function onPick() {
-  store.pickRandomFood();
+  if (isPicking.value || !store.hasAvailableFoods) return;
+
+  isPicking.value = true;
+  store.resetRound();
+
+  const delay = 3000 + Math.floor(Math.random() * 1000);
+  pickTimeoutId.value = window.setTimeout(() => {
+    store.pickRandomFood();
+    isPicking.value = false;
+    pickTimeoutId.value = null;
+  }, delay);
 }
 
 function onConfirm() {
@@ -104,9 +122,9 @@ function onEscapeKeyDown(event) {
       <!-- <button class="ghost-btn reset-btn" @click="store.resetAllStats">🗑️ 초기화</button> -->
     </section>
 
-    <FoodCard :food="store.currentFood" :emptyMessage="store.emptyMessage" />
+    <FoodCard :food="displayFood" :emptyMessage="displayEmptyMessage" :isLoading="isPicking" />
 
-    <RouletteButton :disabled="!store.hasAvailableFoods" @pick="onPick" />
+    <RouletteButton :disabled="isPicking || !store.hasAvailableFoods" @pick="onPick" />
 
     <button class="ghost-btn reset-btn" @click="store.resetAllStats">초기화</button>
 
