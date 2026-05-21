@@ -13,9 +13,10 @@ function mergeSavedFoodStats(savedFoods) {
   if (!Array.isArray(savedFoods)) return baseFoods;
 
   const savedById = new Map(savedFoods.map((food) => [food.id, food]));
+  const savedByName = new Map(savedFoods.map((food) => [food.name, food]));
 
   return baseFoods.map((food) => {
-    const saved = savedById.get(food.id);
+    const saved = savedByName.get(food.name) ?? savedById.get(food.id);
     if (!saved) return food;
 
     return {
@@ -66,6 +67,22 @@ export const useFoodStore = defineStore("food", () => {
 
   const hasAvailableFoods = computed(() => filteredFoods.value.length > 0);
 
+  function buildPersistPayload() {
+    return {
+      foods: foods.value,
+      currentFoodId: currentFoodId.value,
+      confirmedFoodId: confirmedFoodId.value,
+      picksToday: picksToday.value,
+      lastRecommendedId: lastRecommendedId.value,
+      recentConfirmedIds: recentConfirmedIds.value,
+      selectedCategories: selectedCategories.value,
+    };
+  }
+
+  function persistState() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(buildPersistPayload()));
+  }
+
   function pickRandomFood() {
     if (!hasAvailableFoods.value) return null;
 
@@ -83,6 +100,16 @@ export const useFoodStore = defineStore("food", () => {
     lastRecommendedId.value = selected.id;
 
     return selected;
+  }
+
+  function remapSavedFoodId(savedId, savedFoods) {
+    if (!Number.isFinite(savedId) || !Array.isArray(savedFoods)) return null;
+
+    const savedFood = savedFoods.find((food) => food.id === savedId);
+    if (!savedFood) return null;
+
+    const matched = foods.value.find((food) => food.name === savedFood.name);
+    return matched?.id ?? null;
   }
 
   function confirmCurrentFood() {
@@ -138,18 +165,32 @@ export const useFoodStore = defineStore("food", () => {
 
   function loadState() {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return;
+    if (!raw) {
+      // 신규/초기 사용자도 항상 최신(200개+) 메뉴 데이터 구조를 저장한다.
+      persistState();
+      return;
+    }
 
     try {
       const saved = JSON.parse(raw);
       foods.value = mergeSavedFoodStats(saved.foods);
-      if (typeof saved.currentFoodId === "number") currentFoodId.value = saved.currentFoodId;
-      if (typeof saved.confirmedFoodId === "number") confirmedFoodId.value = saved.confirmedFoodId;
+      const remappedCurrentId = remapSavedFoodId(saved.currentFoodId, saved.foods);
+      if (remappedCurrentId !== null) currentFoodId.value = remappedCurrentId;
+
+      const remappedConfirmedId = remapSavedFoodId(saved.confirmedFoodId, saved.foods);
+      if (remappedConfirmedId !== null) confirmedFoodId.value = remappedConfirmedId;
+
       if (typeof saved.picksToday === "number") picksToday.value = saved.picksToday;
-      if (typeof saved.lastRecommendedId === "number") {
-        lastRecommendedId.value = saved.lastRecommendedId;
+
+      const remappedLastRecommendedId = remapSavedFoodId(saved.lastRecommendedId, saved.foods);
+      if (remappedLastRecommendedId !== null) lastRecommendedId.value = remappedLastRecommendedId;
+
+      if (Array.isArray(saved.recentConfirmedIds)) {
+        recentConfirmedIds.value = saved.recentConfirmedIds
+          .map((id) => remapSavedFoodId(id, saved.foods))
+          .filter((id) => id !== null);
       }
-      if (Array.isArray(saved.recentConfirmedIds)) recentConfirmedIds.value = saved.recentConfirmedIds;
+
       if (Array.isArray(saved.selectedCategories)) {
         selectedCategories.value = saved.selectedCategories.filter((value) =>
           categories.value.includes(value),
@@ -159,24 +200,19 @@ export const useFoodStore = defineStore("food", () => {
           ? [saved.categoryFilter]
           : [];
       }
+
+      // 저장된 구버전/구개수 데이터를 현재 최신 메뉴 목록으로 즉시 동기화한다.
+      persistState();
     } catch (error) {
       console.error("저장된 상태를 불러오는 중 오류가 발생했습니다.", error);
+      persistState();
     }
   }
 
   watch(
     [foods, currentFoodId, confirmedFoodId, picksToday, lastRecommendedId, recentConfirmedIds, selectedCategories],
     () => {
-      const payload = {
-        foods: foods.value,
-        currentFoodId: currentFoodId.value,
-        confirmedFoodId: confirmedFoodId.value,
-        picksToday: picksToday.value,
-        lastRecommendedId: lastRecommendedId.value,
-        recentConfirmedIds: recentConfirmedIds.value,
-        selectedCategories: selectedCategories.value,
-      };
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+      persistState();
     },
     { deep: true },
   );
