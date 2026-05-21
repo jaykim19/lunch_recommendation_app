@@ -12,11 +12,17 @@ const categorySelectRef = ref(null);
 const isPicking = ref(false);
 const pickTimeoutId = ref(null);
 const selectedCategorySet = computed(() => new Set(store.selectedCategories));
+const categoryCountMap = computed(() =>
+  store.foods.reduce((acc, food) => {
+    acc[food.category] = (acc[food.category] ?? 0) + 1;
+    return acc;
+  }, {}),
+);
 const displayFood = computed(() => (isPicking.value ? null : store.currentFood));
 const displayEmptyMessage = computed(() => store.emptyMessage);
 const categorySummary = computed(() =>
   store.selectedCategories.length === 0
-    ? "전체 항목에서 메뉴 랜덤 선택"
+    ? `전체 항목에서 메뉴 랜덤 선택 (${store.foods.length}개)`
     : `선택된 카테고리에서 메뉴 랜덤 선택 (${store.selectedCategories.length}개)`,
 );
 
@@ -114,7 +120,7 @@ function onEscapeKeyDown(event) {
               :checked="selectedCategorySet.has(category)"
               @change="onToggleCategory(category, $event.target.checked)"
             />
-            <span>{{ category }}</span>
+            <span>{{ category }} ({{ categoryCountMap[category] ?? 0 }}개)</span>
           </label>
         </div>
       </div>
