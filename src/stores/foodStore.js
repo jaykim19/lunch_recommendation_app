@@ -8,6 +8,10 @@ function cloneInitialFoods() {
   return initialFoods.map((food) => ({ ...food }));
 }
 
+function getDefaultSelectedCategories(sourceFoods = initialFoods) {
+  return [...new Set(sourceFoods.map((food) => food.category))];
+}
+
 function mergeSavedFoodStats(savedFoods) {
   const baseFoods = cloneInitialFoods();
   if (!Array.isArray(savedFoods)) return baseFoods;
@@ -36,7 +40,7 @@ export const useFoodStore = defineStore("food", () => {
   const picksToday = ref(0);
   const lastRecommendedId = ref(null);
   const recentConfirmedIds = ref([]);
-  const selectedCategories = ref([]);
+  const selectedCategories = ref(getDefaultSelectedCategories());
 
   const categories = computed(() => {
     const uniqueCategories = [...new Set(foods.value.map((food) => food.category))];
@@ -46,7 +50,6 @@ export const useFoodStore = defineStore("food", () => {
   const filteredFoods = computed(() =>
     foods.value.filter((food) => {
       if (!food.isActive) return false;
-      if (selectedCategories.value.length === 0) return true;
       return selectedCategories.value.includes(food.category);
     }),
   );
@@ -76,6 +79,7 @@ export const useFoodStore = defineStore("food", () => {
       lastRecommendedId: lastRecommendedId.value,
       recentConfirmedIds: recentConfirmedIds.value,
       selectedCategories: selectedCategories.value,
+      categorySelectionVersion: 2,
     };
   }
 
@@ -160,13 +164,13 @@ export const useFoodStore = defineStore("food", () => {
     picksToday.value = 0;
     lastRecommendedId.value = null;
     recentConfirmedIds.value = [];
-    selectedCategories.value = [];
+    selectedCategories.value = getDefaultSelectedCategories();
   }
 
   function loadState() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) {
-      // 신규/초기 사용자도 항상 최신(200개+) 메뉴 데이터 구조를 저장한다.
+      selectedCategories.value = getDefaultSelectedCategories();
       persistState();
       return;
     }
@@ -192,13 +196,21 @@ export const useFoodStore = defineStore("food", () => {
       }
 
       if (Array.isArray(saved.selectedCategories)) {
-        selectedCategories.value = saved.selectedCategories.filter((value) =>
+        const validCategories = saved.selectedCategories.filter((value) =>
           categories.value.includes(value),
         );
+
+        if (validCategories.length === 0 && saved.categorySelectionVersion !== 2) {
+          selectedCategories.value = [...categories.value];
+        } else {
+          selectedCategories.value = validCategories;
+        }
       } else if (typeof saved.categoryFilter === "string" && saved.categoryFilter !== "전체") {
         selectedCategories.value = categories.value.includes(saved.categoryFilter)
           ? [saved.categoryFilter]
           : [];
+      } else {
+        selectedCategories.value = getDefaultSelectedCategories(foods.value);
       }
 
       // 저장된 구버전/구개수 데이터를 현재 최신 메뉴 목록으로 즉시 동기화한다.

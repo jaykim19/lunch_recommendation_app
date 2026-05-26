@@ -8,6 +8,7 @@ const seedFoods = [
   { name: "비빔밥", category: "한식" },
   { name: "돌솥비빔밥", category: "한식" },
   { name: "김밥", category: "한식" },
+  { name: "한식뷔페", category: "한식" },
   { name: "떡볶이", category: "분식" },
   { name: "라볶이", category: "분식" },
   { name: "칼국수", category: "면요리" },

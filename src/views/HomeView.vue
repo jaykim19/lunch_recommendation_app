@@ -11,20 +11,38 @@ const showCategoryOptions = ref(false);
 const categorySelectRef = ref(null);
 const isPicking = ref(false);
 const pickTimeoutId = ref(null);
-const selectedCategorySet = computed(() => new Set(store.selectedCategories));
-const categoryCountMap = computed(() =>
-  store.foods.reduce((acc, food) => {
-    acc[food.category] = (acc[food.category] ?? 0) + 1;
-    return acc;
-  }, {}),
+const boundSelectedCategories = computed({
+  get() {
+    return [...store.selectedCategories];
+  },
+  set(nextCategories) {
+    store.setSelectedCategories(nextCategories);
+  },
+});
+const isAllCategoriesSelected = computed(
+  () =>
+    store.categories.length > 0 &&
+    boundSelectedCategories.value.length === store.categories.length,
 );
+const isCategorySelectionIndeterminate = computed(
+  () =>
+    boundSelectedCategories.value.length > 0 &&
+    boundSelectedCategories.value.length < store.categories.length,
+);
+const hasSelectedCategories = computed(() => boundSelectedCategories.value.length > 0);
 const displayFood = computed(() => (isPicking.value ? null : store.currentFood));
 const displayEmptyMessage = computed(() => store.emptyMessage);
-const categorySummary = computed(() =>
-  store.selectedCategories.length === 0
-    ? `전체 항목에서 메뉴 랜덤 선택 (${store.foods.length}개)`
-    : `선택된 카테고리에서 메뉴 랜덤 선택 (${store.selectedCategories.length}개)`,
-);
+const categorySummary = computed(() => {
+  if (isAllCategoriesSelected.value) {
+    return `전체 항목에서 메뉴 랜덤 선택`;
+  }
+
+  if (boundSelectedCategories.value.length === 0) {
+    return `선택된 카테고리 없음`;
+  }
+
+  return `선택된 카테고리에서 메뉴 랜덤 선택 (${boundSelectedCategories.value.length}개)`;
+});
 
 onMounted(() => {
   store.loadState();
@@ -42,7 +60,7 @@ onBeforeUnmount(() => {
 });
 
 function onPick() {
-  if (isPicking.value || !store.hasAvailableFoods) return;
+  if (isPicking.value || !hasSelectedCategories.value) return;
 
   isPicking.value = true;
   store.resetRound();
@@ -67,13 +85,8 @@ function onRestart() {
   store.resetRound();
 }
 
-function onToggleCategory(category, checked) {
-  const next = new Set(store.selectedCategories);
-
-  if (checked) next.add(category);
-  else next.delete(category);
-
-  store.setSelectedCategories([...next]);
+function onToggleSelectAll(checked) {
+  boundSelectedCategories.value = checked ? [...store.categories] : [];
 }
 
 function onOutsidePointerDown(event) {
@@ -114,13 +127,22 @@ function onEscapeKeyDown(event) {
         </button>
 
         <div v-if="showCategoryOptions" class="category-options">
-          <label v-for="category in store.categories" :key="category" class="category-option">
+          <label class="category-option category-option-all">
             <input
               type="checkbox"
-              :checked="selectedCategorySet.has(category)"
-              @change="onToggleCategory(category, $event.target.checked)"
+              :checked="isAllCategoriesSelected"
+              :indeterminate.prop="isCategorySelectionIndeterminate"
+              @change="onToggleSelectAll($event.target.checked)"
             />
-            <span>{{ category }} ({{ categoryCountMap[category] ?? 0 }}개)</span>
+            <span>전체선택</span>
+          </label>
+          <label v-for="category in store.categories" :key="category" class="category-option">
+            <input
+              v-model="boundSelectedCategories"
+              type="checkbox"
+              :value="category"
+            />
+            <span>{{ category }}</span>
           </label>
         </div>
       </div>
@@ -130,9 +152,16 @@ function onEscapeKeyDown(event) {
 
     <FoodCard :food="displayFood" :emptyMessage="displayEmptyMessage" :isLoading="isPicking" />
 
-    <RouletteButton :disabled="isPicking || !store.hasAvailableFoods" @pick="onPick" />
+    <RouletteButton :disabled="isPicking || !hasSelectedCategories" @pick="onPick" />
 
-    <button class="ghost-btn reset-btn" @click="store.resetAllStats">초기화</button>
+    <button
+      class="ghost-btn reset-btn"
+      type="button"
+      :disabled="!hasSelectedCategories"
+      @click="store.resetAllStats"
+    >
+      초기화
+    </button>
 
     <ChoiceButtons :disabled="!store.currentFood || !!store.confirmedFood" @confirm="onConfirm" @reject="onReject" />
 

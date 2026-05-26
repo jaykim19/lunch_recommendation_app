@@ -115,6 +115,13 @@ li {
   cursor: pointer;
 }
 
+.category-option-all {
+  font-weight: 600;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 0.25rem;
+  padding-bottom: 0.45rem;
+}
+
 .card,
 .result-card,
 .stats {
@@ -205,6 +212,11 @@ li {
 .ghost-btn {
   background: #f5f3ff;
   color: #1f2937;
+}
+
+.ghost-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .reset-btn {
