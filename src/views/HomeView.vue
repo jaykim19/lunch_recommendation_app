@@ -178,7 +178,7 @@ function onEscapeKeyDown(event) {
         <p v-if="store.recentConfirmedFoods.length === 0" class="placeholder">아직 확정된 메뉴가 없어요.</p>
       </div>
     </details> -->
-    <p class="placeholder">메뉴 종류는 계속 업데이트 될 예정입니다.</p>
+    <p class="placeholder layout-note">메뉴 종류는 계속 업데이트 될 예정입니다.</p>
 
     <footer class="app-footer">
       <!-- <p class="creator-text">기획/개발: 김지영, 윤혜준</p> -->
