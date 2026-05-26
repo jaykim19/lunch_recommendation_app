@@ -3,6 +3,24 @@
   line-height: 1.5;
   color: #1f2937;
   background-color: #fff7fb;
+  --layout-scale: min(1, calc(100vw / 720px));
+  --space-3xs: calc(0.2rem * var(--layout-scale));
+  --space-2xs: calc(0.25rem * var(--layout-scale));
+  --space-xs: calc(0.4rem * var(--layout-scale));
+  --space-sm: calc(0.5rem * var(--layout-scale));
+  --space-md: calc(0.75rem * var(--layout-scale));
+  --space-lg: calc(1rem * var(--layout-scale));
+  --space-xl: calc(1.2rem * var(--layout-scale));
+  --space-2xl: calc(1.5rem * var(--layout-scale));
+  --space-3xl: calc(2rem * var(--layout-scale));
+  --space-layout-top: calc(1.5rem * var(--layout-scale));
+  --space-footer: calc(4.5rem * var(--layout-scale));
+  --space-footer-compact: calc(1.25rem * var(--layout-scale));
+  --space-layout-bottom: calc(0.8rem * var(--layout-scale));
+  --space-gap-sm: calc(0.45rem * var(--layout-scale));
+  --space-gap-md: calc(0.6rem * var(--layout-scale));
+  --space-gap-lg: calc(0.8rem * var(--layout-scale));
+  --card-height: calc(158px * var(--layout-scale));
 }
 
 * {
@@ -28,7 +46,10 @@ li {
   flex-direction: column;
   max-width: 720px;
   margin: 0 auto;
-  padding: 2rem 1rem 0.8rem;
+  padding:
+    calc(var(--space-layout-top) + env(safe-area-inset-top, 0px))
+    var(--space-lg)
+    calc(var(--space-layout-bottom) + env(safe-area-inset-bottom, 0px));
 }
 
 .layout > * {
@@ -37,20 +58,25 @@ li {
 
 .hero {
   text-align: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--space-xl);
 }
 
 .hero h1 {
   margin-top: 0;
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--space-xs);
   font-size: 2rem;
   color: #6d28d9;
+}
+
+.hero p {
+  margin: 0;
+  line-height: 1.45;
 }
 
 .hero-title-wrap {
   display: inline-flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: var(--space-gap-md);
 }
 
 .hero-icon {
@@ -63,15 +89,15 @@ li {
   /* background: #f3e8ff; */
   /* box-shadow: inset 0 0 0 1px #d8b4fe; */
   font-size: 1.6rem;
-  margin-bottom: 5px;
+  margin-bottom: 0;
 }
 
 .toolbar {
   display: flex;
-  gap: 0.8rem;
+  gap: var(--space-gap-lg);
   align-items: center;
   flex-wrap: wrap;
-  margin-bottom: 1rem;
+  margin-bottom: var(--space-lg);
 }
 
 .category-select-wrap {
@@ -87,7 +113,7 @@ li {
   width: 100%;
   border: 1px solid #d1d5db;
   border-radius: 8px;
-  padding: 0.5rem 0.75rem;
+  padding: var(--space-sm) var(--space-md);
   background: #fff;
   text-align: left;
   cursor: pointer;
@@ -96,13 +122,13 @@ li {
 .category-select-trigger::after {
   content: "▾";
   color: #6b7280;
-  margin-left: 0.6rem;
+  margin-left: var(--space-gap-md);
   font-size: 0.9rem;
 }
 
 .category-options {
   position: absolute;
-  top: calc(100% + 6px);
+  top: calc(100% + 6px * var(--layout-scale));
   left: 0;
   width: 100%;
   max-height: 240px;
@@ -111,23 +137,23 @@ li {
   border-radius: 10px;
   background: #fff;
   box-shadow: 0 8px 18px rgba(15, 23, 42, 0.12);
-  padding: 0.45rem;
+  padding: var(--space-gap-sm);
   z-index: 20;
 }
 
 .category-option {
   display: flex;
   align-items: center;
-  gap: 0.45rem;
-  padding: 0.25rem;
+  gap: var(--space-gap-sm);
+  padding: var(--space-2xs);
   cursor: pointer;
 }
 
 .category-option-all {
   font-weight: 600;
   border-bottom: 1px solid #e5e7eb;
-  margin-bottom: 0.25rem;
-  padding-bottom: 0.45rem;
+  margin-bottom: var(--space-2xs);
+  padding-bottom: var(--space-gap-sm);
 }
 
 .card,
@@ -136,27 +162,40 @@ li {
   border: 1px solid #f3e8ff;
   border-radius: 14px;
   background: #ffffff;
-  padding: 1.2rem;
-  margin-top: -0.2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-lg) var(--space-xl);
+  margin-top: 0;
   box-shadow: 0 8px 18px rgba(167, 139, 250, 0.12);
   text-align: center;
-  height: 142px;
+  min-height: var(--card-height);
 }
 
 .card-label {
-  margin-top: 0;
-  margin-bottom: 0.4rem;
+  margin: 0;
   color: #6b7280;
   font-size: 0.9rem;
+}
+
+.food-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2xs);
+  width: 100%;
 }
 
 .food-name {
   margin: 0;
   font-size: 1.8rem;
+  line-height: 1.25;
 }
 
 .food-category {
-  margin: 0.3rem 0 0;
+  margin: 0;
   color: #2563eb;
   font-weight: 600;
 }
@@ -165,8 +204,8 @@ li {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 0.6rem;
-  min-height: 3.2rem;
+  gap: var(--space-gap-md);
+  min-height: calc(3.2rem * var(--layout-scale));
 }
 
 .loading-food-item {
@@ -188,9 +227,19 @@ li {
 }
 
 .placeholder {
+  margin: 0;
   color: #6b7280;
   text-align: center;
   font-weight: bold;
+  line-height: 1.55;
+}
+
+.card .placeholder {
+  padding: 0 var(--space-2xs);
+}
+
+.layout-note {
+  margin: var(--space-md) 0 0;
 }
 
 .primary-btn,
@@ -199,14 +248,14 @@ li {
 .reject-btn {
   border: none;
   border-radius: 10px;
-  padding: 0.7rem 1rem;
+  padding: calc(0.7rem * var(--layout-scale)) var(--space-lg);
   cursor: pointer;
   font-size: 0.95rem;
 }
 
 .primary-btn {
   width: 100%;
-  margin-top: 1rem;
+  margin-top: var(--space-md);
   background: linear-gradient(120deg, #7c3aed, #ec4899);
   color: #fff;
   font-weight: 700;
@@ -235,8 +284,7 @@ li {
   font-weight: 700;
   transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
   width: 100%;
-  /* 임시 추가 */
-  margin-top: 0.5rem;
+  margin-top: var(--space-md);
 }
 
 .reset-btn:hover {
@@ -258,8 +306,8 @@ li {
 .choice-buttons {
   /* display: grid; */
   grid-template-columns: 1fr 1fr;
-  gap: 0.8rem;
-  margin-top: 1rem;
+  gap: var(--space-gap-lg);
+  margin-top: var(--space-lg);
 }
 
 .confirm-btn {
@@ -279,13 +327,13 @@ li {
 }
 
 .stats h4 {
-  margin-top: 0.4rem;
-  margin-bottom: 0.4rem;
+  margin-top: var(--space-xs);
+  margin-bottom: var(--space-xs);
 }
 
 .stats ul {
   margin: 0;
-  padding-left: 1.2rem;
+  padding-left: var(--space-xl);
 }
 
 .stats-accordion {
@@ -299,13 +347,13 @@ li {
 }
 
 .stats-accordion[open] summary {
-  margin-bottom: 0.8rem;
+  margin-bottom: var(--space-gap-lg);
 }
 
 .app-footer {
   margin-top: auto;
-  padding-top: 4.5rem;
-  padding-bottom: 0.2rem;
+  padding-top: var(--space-footer);
+  padding-bottom: var(--space-3xs);
   text-align: center;
   color: #6b7280;
 }
@@ -316,8 +364,17 @@ li {
 }
 
 .copyright-text {
-  margin: 0.3rem 0 0;
+  margin: var(--space-xs) 0 0;
   font-size: 0.75rem;
+}
+
+.result-card h3 {
+  margin: 0;
+  line-height: 1.35;
+}
+
+.result-card p {
+  margin: var(--space-2xs) 0 0;
 }
 
 @keyframes float-food {
@@ -333,6 +390,12 @@ li {
 }
 
 @media (max-width: 560px) {
+  :root {
+    --mobile-section-gap: max(calc(2rem * var(--layout-scale)), 1.35rem);
+    --mobile-block-gap: max(calc(1.35rem * var(--layout-scale)), 1rem);
+    --mobile-card-gap: max(calc(0.75rem * var(--layout-scale)), 0.55rem);
+  }
+
   html,
   body {
     height: 100%;
@@ -350,129 +413,110 @@ li {
     max-height: 100svh;
     min-height: 100svh;
     overflow: hidden;
-    padding:
-      calc(0.65rem + env(safe-area-inset-top, 0px))
-      0.85rem
-      calc(0.35rem + env(safe-area-inset-bottom, 0px));
+    padding-top: calc(var(--space-lg) + env(safe-area-inset-top, 0px));
   }
 
   .hero {
-    margin-bottom: 0.45rem;
+    margin-bottom: var(--mobile-block-gap);
   }
 
   .hero h1 {
-    margin-bottom: 0.2rem;
-    font-size: 1.35rem;
+    margin-bottom: var(--space-xs);
+    font-size: 1.75rem;
   }
 
   .hero p {
-    margin: 0;
-    font-size: 0.82rem;
-    line-height: 1.35;
+    font-size: 0.92rem;
+    line-height: 1.4;
   }
 
   .hero-icon {
-    font-size: 1.25rem;
-    margin-bottom: 0;
+    font-size: 1.45rem;
   }
 
   .toolbar {
-    gap: 0.45rem;
-    margin-bottom: 0.4rem;
+    margin-bottom: var(--mobile-section-gap);
   }
 
   .category-select-trigger {
-    padding: 0.42rem 0.65rem;
-    font-size: 0.82rem;
+    font-size: 0.92rem;
   }
 
   .category-options {
-    max-height: min(220px, 42svh);
+    max-height: min(240px, 42svh);
   }
 
   .card,
   .result-card,
   .stats {
-    height: auto;
-    min-height: 84px;
-    max-height: 96px;
-    padding: 0.6rem 0.75rem;
-    margin-top: 0;
-    overflow: hidden;
+    min-height: max(var(--card-height), 112px);
+    padding: var(--space-lg) var(--space-xl);
+    gap: var(--mobile-card-gap);
   }
 
   .card-label {
-    margin-bottom: 0.2rem;
-    font-size: 0.78rem;
+    font-size: 0.85rem;
   }
 
   .food-name {
-    font-size: 1.3rem;
+    font-size: 1.55rem;
   }
 
   .food-category {
-    margin-top: 0.15rem;
-    font-size: 0.82rem;
+    font-size: 0.92rem;
   }
 
   .card .placeholder,
   .loading-foods {
-    min-height: 2.4rem;
-    font-size: 0.82rem;
-    line-height: 1.35;
+    font-size: 0.92rem;
+    line-height: 1.5;
   }
 
   .loading-food-item {
-    font-size: 1.35rem;
+    font-size: 1.5rem;
   }
 
   .result-card h3 {
-    margin: 0;
-    font-size: 1rem;
-    line-height: 1.35;
+    font-size: 1.15rem;
+    line-height: 1.4;
   }
 
   .result-card p {
-    margin: 0.2rem 0 0;
-    font-size: 0.82rem;
+    font-size: 0.92rem;
   }
 
   .primary-btn,
   .ghost-btn,
   .confirm-btn,
   .reject-btn {
-    padding: 0.52rem 0.85rem;
-    font-size: 0.88rem;
+    font-size: 0.92rem;
   }
 
   .primary-btn {
-    margin-top: 0.4rem;
+    margin-top: var(--mobile-section-gap);
   }
 
   .reset-btn {
     margin-left: 0;
     min-width: 100%;
-    margin-top: 0.35rem;
+    margin-top: var(--mobile-block-gap);
   }
 
-  .choice-buttons {
-    margin-top: 0;
+  .result-card {
+    margin-top: var(--mobile-block-gap);
   }
 
   .layout-note {
-    margin: 0.25rem 0 0;
-    font-size: 0.72rem;
-    line-height: 1.3;
+    font-size: 0.82rem;
+    line-height: 1.35;
+    margin-top: var(--mobile-block-gap);
   }
 
   .app-footer {
-    margin-top: auto;
-    padding-top: 0.25rem;
-    padding-bottom: 0;
+    padding-top: var(--space-sm);
   }
 
   .copyright-text {
-    margin: 0;
     font-size: 0.62rem;
     line-height: 1.25;
   }
@@ -480,33 +524,19 @@ li {
   .layout:has(.result-card) .layout-note {
     display: none;
   }
-
-  .layout:has(.result-card) .card,
-  .layout:has(.result-card) .result-card {
-    min-height: 72px;
-    max-height: 80px;
-  }
 }
 
 @media (max-width: 560px) and (max-height: 640px) {
   .hero h1 {
-    font-size: 1.2rem;
+    font-size: 1.55rem;
   }
 
   .hero p {
-    font-size: 0.76rem;
-  }
-
-  .card,
-  .result-card,
-  .stats {
-    min-height: 76px;
-    max-height: 84px;
-    padding: 0.5rem 0.65rem;
+    font-size: 0.88rem;
   }
 
   .food-name {
-    font-size: 1.15rem;
+    font-size: 1.4rem;
   }
 
   .layout-note {
