@@ -450,7 +450,8 @@ li {
   .card,
   .result-card,
   .stats {
-    min-height: max(var(--card-height), 112px);
+    /* min-height: max(var(--card-height), 112px); */
+    min-height: 150px;
     padding: var(--space-lg) var(--space-xl);
     gap: var(--mobile-card-gap);
   }
@@ -460,7 +461,7 @@ li {
   }
 
   .food-name {
-    font-size: 1.55rem;
+    font-size: 1.65rem;
   }
 
   .food-category {
