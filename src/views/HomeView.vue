@@ -32,16 +32,18 @@ const isCategorySelectionIndeterminate = computed(
 const hasSelectedCategories = computed(() => boundSelectedCategories.value.length > 0);
 const displayFood = computed(() => (isPicking.value ? null : store.currentFood));
 const displayEmptyMessage = computed(() => store.emptyMessage);
+const selectedCategoryCount = computed(() => boundSelectedCategories.value.length);
+const availableMenuCount = computed(() => store.filteredFoods.length);
 const categorySummary = computed(() => {
   if (isAllCategoriesSelected.value) {
-    return `전체 항목에서 메뉴 랜덤 선택`;
+    return `전체 카테고리에서 추천받기`;
   }
 
   if (boundSelectedCategories.value.length === 0) {
     return `선택된 카테고리 없음`;
   }
 
-  return `선택된 카테고리에서 메뉴 랜덤 선택 (${boundSelectedCategories.value.length}개)`;
+  return `선택한 카테고리 ${boundSelectedCategories.value.length}개에서 추천받기`;
 });
 
 onMounted(() => {
@@ -104,18 +106,34 @@ function onEscapeKeyDown(event) {
 <template>
   <main class="layout">
     <header class="hero">
-      <div class="hero-title-wrap">
-        <span class="hero-icon" aria-hidden="true">🍱</span>
-        <h1>오늘의 한끼픽</h1>
-      </div>
-      <p>
-        오늘의 식사 메뉴를 골라드릴게요. <br/>
-        버튼을 눌러 오늘의 메뉴를 확인해보세요!
+      <div class="hero-copy">
+        <span class="hero-kicker">Lunch Recommendation</span>
+        <div class="hero-title-wrap">
+          <span class="hero-icon" aria-hidden="true">🍱</span>
+          <h1>오늘의 한끼픽</h1>
+        </div>
+        <p>
+          고민은 짧게, 점심은 맛있게.<br />
+          원하는 카테고리를 고르고 오늘의 메뉴를 뽑아보세요.
         </p>
+      </div>
+      <div class="hero-stats" aria-label="추천 현황">
+        <span>
+          <strong>{{ selectedCategoryCount }}</strong>
+          카테고리
+        </span>
+        <span>
+          <strong>{{ availableMenuCount }}</strong>
+          메뉴 후보
+        </span>
+      </div>
     </header>
 
     <section class="toolbar">
-      <!-- <label for="">카테고리</label> -->
+      <div class="toolbar-heading">
+        <span class="section-label">카테고리 필터</span>
+        <!-- <span class="toolbar-hint">입맛에 맞는 후보만 남겨요</span> -->
+      </div>
       <div ref="categorySelectRef" class="category-select-wrap">
         <button
           id="category-select-trigger"
@@ -160,7 +178,7 @@ function onEscapeKeyDown(event) {
       :disabled="!hasSelectedCategories"
       @click="store.resetAllStats"
     >
-      초기화
+      선택과 기록 초기화
     </button>
 
     <ChoiceButtons :disabled="!store.currentFood || !!store.confirmedFood" @confirm="onConfirm" @reject="onReject" />

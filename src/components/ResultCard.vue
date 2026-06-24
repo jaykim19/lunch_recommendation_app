@@ -11,6 +11,7 @@ defineEmits(["restart"]);
 
 <template>
   <section v-if="confirmedFood" class="result-card">
+    <span class="result-badge">결정 완료</span>
     <h3>오늘의 식사는 {{ confirmedFood.name }}!</h3>
     <p>맛있게 먹고 오세요.</p>
     <!-- <button class="ghost-btn" @click="$emit('restart')">다시 하기</button> !-->

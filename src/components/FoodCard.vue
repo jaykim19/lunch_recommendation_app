@@ -17,7 +17,7 @@ defineProps({
 
 <template>
   <section class="card" aria-live="polite">
-    <p class="card-label">오늘의 추천 메뉴</p>
+    <p class="card-label">Today's Pick</p>
     <div v-if="isLoading" class="loading-foods" aria-label="메뉴 로딩 중">
       <span class="loading-food-item">🍜</span>
       <span class="loading-food-item">🍔</span>
@@ -32,7 +32,7 @@ defineProps({
       <template v-if="emptyMessage">{{ emptyMessage }}</template>
       <template v-else>
         아직 메뉴를 뽑지 않았어요.<br />
-        메뉴 뽑기 버튼을 눌러보세요!
+        메뉴 뽑기 버튼을 눌러 오늘의 한 끼를 정해보세요.
       </template>
     </p>
   </section>
