@@ -27,14 +27,14 @@ npm run dev
 
 ## ChatGPT 추천 설정
 
-`.env.example`을 참고해 프로젝트 루트의 `.env`에 OpenAI API 키를 설정합니다.
+OpenAI API 호출은 `/api/recommend` Vercel Function에서 처리합니다. 로컬에서 Vercel Functions까지 실행할 때는 `.env.example`을 참고해 `.env`에 서버 환경변수를 설정하고 `vercel dev`를 사용합니다.
 
 ```bash
-VITE_OPENAI_API_KEY=your_openai_api_key_here
-VITE_OPENAI_MODEL=gpt-4o-mini
+OPENAI_API_KEY=your_openai_api_key_here
+OPENAI_MODEL=gpt-4o-mini
 ```
 
-`VITE_` 환경 변수는 사용자에게 노출될 수 있습니다. 현재 방식은 로컬 사용용이며, 배포 환경에서는 API 키를 서버에 보관하고 서버를 통해 OpenAI API를 호출하세요. ChatGPT 구독과 OpenAI API 사용 요금은 별도입니다.
+Vercel에서는 **Project → Settings → Environment Variables**에 `OPENAI_API_KEY`를 등록한 뒤 다시 배포해야 합니다. `OPENAI_MODEL`은 선택 사항이며 기본값은 `gpt-4o-mini`입니다. 서버 전용 변수이므로 변수 이름에 `VITE_` 접두사를 붙이지 마세요. ChatGPT 구독과 OpenAI API 사용 요금은 별도입니다.
 
 ## 빌드
 

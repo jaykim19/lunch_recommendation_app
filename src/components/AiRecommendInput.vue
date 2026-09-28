@@ -1,9 +1,6 @@
 <script setup>
 import { onBeforeUnmount, ref } from "vue";
-import {
-  hasApiKey,
-  fetchAiRecommendation,
-} from "../services/openaiService";
+import { fetchAiRecommendation } from "../services/openaiService";
 
 const props = defineProps({
   isLoading: {
@@ -50,11 +47,6 @@ async function handleRecommend() {
     return;
   }
 
-  if (!hasApiKey()) {
-    errorMessage.value = ".env 파일에 VITE_OPENAI_API_KEY를 설정해주세요.";
-    return;
-  }
-
   activeController?.abort();
   const controller = new AbortController();
   activeController = controller;
@@ -77,15 +69,7 @@ async function handleRecommend() {
 
     console.error("AI 추천 오류:", error);
     let msg = error.message || "추천을 불러오는 중 오류가 발생했습니다.";
-    if (msg.includes("NO_API_KEY")) {
-      msg = ".env 파일에 VITE_OPENAI_API_KEY를 설정해주세요.";
-    } else if (
-      error.status === 401 ||
-      error.status === 403 ||
-      error.code === "invalid_api_key"
-    ) {
-      msg = ".env에 설정된 OpenAI API 키가 유효하지 않습니다.";
-    } else if (error.status === 429) {
+    if (error.status === 429) {
       msg = "OpenAI API 사용 한도에 도달했습니다. 결제 설정이나 사용량을 확인해주세요.";
     }
     errorMessage.value = msg;
