@@ -10,6 +10,7 @@
 - **메뉴 확정/거절**: 추천 메뉴를 확정하거나 다시 뽑기 가능
 - **통계 아코디언**: 오늘 확정 횟수와 최근 확정 메뉴를 접고 펼쳐서 확인
 - **로컬 저장**: 새로고침 후에도 선택 상태와 통계가 유지됨
+- **ChatGPT 맞춤 추천**: 키워드와 기분을 입력하면 OpenAI가 점심 메뉴와 추천 이유를 생성
 
 ## 기술 스택
 
@@ -23,6 +24,17 @@
 npm install
 npm run dev
 ```
+
+## ChatGPT 추천 설정
+
+`.env.example`을 참고해 프로젝트 루트의 `.env`에 OpenAI API 키를 설정합니다.
+
+```bash
+VITE_OPENAI_API_KEY=your_openai_api_key_here
+VITE_OPENAI_MODEL=gpt-4o-mini
+```
+
+`VITE_` 환경 변수는 사용자에게 노출될 수 있습니다. 현재 방식은 로컬 사용용이며, 배포 환경에서는 API 키를 서버에 보관하고 서버를 통해 OpenAI API를 호출하세요. ChatGPT 구독과 OpenAI API 사용 요금은 별도입니다.
 
 ## 빌드
 

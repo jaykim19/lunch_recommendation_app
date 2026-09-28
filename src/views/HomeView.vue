@@ -4,13 +4,21 @@ import FoodCard from "../components/FoodCard.vue";
 import RouletteButton from "../components/RouletteButton.vue";
 import ChoiceButtons from "../components/ChoiceButtons.vue";
 import ResultCard from "../components/ResultCard.vue";
+import AiRecommendInput from "../components/AiRecommendInput.vue";
 import { useFoodStore } from "../stores/foodStore";
 
 const store = useFoodStore();
 const showCategoryOptions = ref(false);
 const categorySelectRef = ref(null);
+const aiRecommendRef = ref(null);
 const isPicking = ref(false);
+const isAiPicking = ref(false);
+const loadingText = ref("");
 const pickTimeoutId = ref(null);
+const activeAiRequestId = ref(null);
+
+const isCardLoading = computed(() => isPicking.value || isAiPicking.value);
+
 const boundSelectedCategories = computed({
   get() {
     return [...store.selectedCategories];
@@ -30,7 +38,7 @@ const isCategorySelectionIndeterminate = computed(
     boundSelectedCategories.value.length < store.categories.length,
 );
 const hasSelectedCategories = computed(() => boundSelectedCategories.value.length > 0);
-const displayFood = computed(() => (isPicking.value ? null : store.currentFood));
+const displayFood = computed(() => (isCardLoading.value ? null : store.currentFood));
 const displayEmptyMessage = computed(() => store.emptyMessage);
 const selectedCategoryCount = computed(() => boundSelectedCategories.value.length);
 const availableMenuCount = computed(() => store.filteredFoods.length);
@@ -59,13 +67,17 @@ onBeforeUnmount(() => {
     clearTimeout(pickTimeoutId.value);
     pickTimeoutId.value = null;
   }
+  aiRecommendRef.value?.cancelRecommendation();
 });
 
 function onPick() {
   if (isPicking.value || !hasSelectedCategories.value) return;
 
+  aiRecommendRef.value?.cancelRecommendation();
+  activeAiRequestId.value = null;
+  isAiPicking.value = false;
+  loadingText.value = "";
   isPicking.value = true;
-  store.resetRound();
 
   const delay = 1500 + Math.floor(Math.random() * 1000);
   pickTimeoutId.value = window.setTimeout(() => {
@@ -73,6 +85,28 @@ function onPick() {
     isPicking.value = false;
     pickTimeoutId.value = null;
   }, delay);
+}
+
+function onStartAiPick(data) {
+  if (pickTimeoutId.value) {
+    clearTimeout(pickTimeoutId.value);
+    pickTimeoutId.value = null;
+  }
+  isPicking.value = false;
+  activeAiRequestId.value = data.requestId;
+  loadingText.value = data.loadingText || "AI가 메뉴를 분석 중이에요... ✨";
+  isAiPicking.value = true;
+}
+
+function onFinishAiPick({ requestId, success, food }) {
+  if (requestId !== activeAiRequestId.value) return;
+
+  activeAiRequestId.value = null;
+  isAiPicking.value = false;
+  loadingText.value = "";
+  if (success && food) {
+    store.setAiFood(food);
+  }
 }
 
 function onConfirm() {
@@ -129,6 +163,13 @@ function onEscapeKeyDown(event) {
       </div>
     </header>
 
+    <AiRecommendInput
+      ref="aiRecommendRef"
+      :isLoading="isAiPicking"
+      @start-ai-pick="onStartAiPick"
+      @finish-ai-pick="onFinishAiPick"
+    />
+
     <section class="toolbar">
       <div class="toolbar-heading">
         <span class="section-label">카테고리 필터</span>
@@ -168,7 +209,12 @@ function onEscapeKeyDown(event) {
       <!-- <button class="ghost-btn reset-btn" @click="store.resetAllStats">🗑️ 초기화</button> -->
     </section>
 
-    <FoodCard :food="displayFood" :emptyMessage="displayEmptyMessage" :isLoading="isPicking" />
+    <FoodCard
+      :food="displayFood"
+      :emptyMessage="displayEmptyMessage"
+      :isLoading="isCardLoading"
+      :loadingText="loadingText"
+    />
 
     <RouletteButton :disabled="isPicking || !hasSelectedCategories" @pick="onPick" />
 

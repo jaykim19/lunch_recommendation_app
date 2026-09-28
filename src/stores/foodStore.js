@@ -42,6 +42,8 @@ export const useFoodStore = defineStore("food", () => {
   const recentConfirmedIds = ref([]);
   const selectedCategories = ref(getDefaultSelectedCategories());
 
+  const customAiFood = ref(null);
+
   const categories = computed(() => {
     const uniqueCategories = [...new Set(foods.value.map((food) => food.category))];
     return uniqueCategories;
@@ -54,13 +56,19 @@ export const useFoodStore = defineStore("food", () => {
     }),
   );
 
-  const currentFood = computed(() =>
-    foods.value.find((food) => food.id === currentFoodId.value) ?? null,
-  );
+  const currentFood = computed(() => {
+    if (customAiFood.value && customAiFood.value.id === currentFoodId.value) {
+      return customAiFood.value;
+    }
+    return foods.value.find((food) => food.id === currentFoodId.value) ?? null;
+  });
 
-  const confirmedFood = computed(() =>
-    foods.value.find((food) => food.id === confirmedFoodId.value) ?? null,
-  );
+  const confirmedFood = computed(() => {
+    if (customAiFood.value && customAiFood.value.id === confirmedFoodId.value) {
+      return customAiFood.value;
+    }
+    return foods.value.find((food) => food.id === confirmedFoodId.value) ?? null;
+  });
 
   const recentConfirmedFoods = computed(() =>
     recentConfirmedIds.value
@@ -116,8 +124,33 @@ export const useFoodStore = defineStore("food", () => {
     return matched?.id ?? null;
   }
 
+  function setAiFood({ name, category, reason }) {
+    const aiItem = {
+      id: `ai_${Date.now()}`,
+      name,
+      category: category || "AI 추천",
+      reason: reason || "",
+      isAi: true,
+      selectedCount: 0,
+      rejectedCount: 0,
+      isActive: true,
+    };
+    customAiFood.value = aiItem;
+    currentFoodId.value = aiItem.id;
+    confirmedFoodId.value = null;
+    emptyMessage.value = "";
+    return aiItem;
+  }
+
   function confirmCurrentFood() {
     if (!currentFood.value) return;
+
+    if (currentFood.value.isAi) {
+      confirmedFoodId.value = currentFood.value.id;
+      emptyMessage.value = "";
+      picksToday.value += 1;
+      return;
+    }
 
     const target = foods.value.find((food) => food.id === currentFood.value.id);
     if (!target) return;
@@ -134,6 +167,14 @@ export const useFoodStore = defineStore("food", () => {
   function rejectCurrentFood() {
     if (!currentFood.value) return;
 
+    if (currentFood.value.isAi) {
+      currentFoodId.value = null;
+      confirmedFoodId.value = null;
+      customAiFood.value = null;
+      emptyMessage.value = "다른 메뉴를 추천해드릴게요! 키워드를 다시 입력하거나 메뉴를 뽑아보세요!";
+      return;
+    }
+
     const target = foods.value.find((food) => food.id === currentFood.value.id);
     if (!target) return;
 
@@ -146,6 +187,7 @@ export const useFoodStore = defineStore("food", () => {
   function resetRound() {
     currentFoodId.value = null;
     confirmedFoodId.value = null;
+    customAiFood.value = null;
     emptyMessage.value = "";
   }
 
@@ -160,6 +202,7 @@ export const useFoodStore = defineStore("food", () => {
     foods.value = cloneInitialFoods();
     currentFoodId.value = null;
     confirmedFoodId.value = null;
+    customAiFood.value = null;
     emptyMessage.value = "";
     picksToday.value = 0;
     lastRecommendedId.value = null;
@@ -241,6 +284,7 @@ export const useFoodStore = defineStore("food", () => {
     recentConfirmedFoods,
     hasAvailableFoods,
     pickRandomFood,
+    setAiFood,
     confirmCurrentFood,
     rejectCurrentFood,
     resetRound,
