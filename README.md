@@ -27,7 +27,7 @@ npm run dev
 
 ## ChatGPT 추천 설정
 
-OpenAI API 호출은 `/api/recommend` Vercel Function에서 처리합니다. 로컬에서 Vercel Functions까지 실행할 때는 `.env.example`을 참고해 `.env`에 서버 환경변수를 설정하고 `vercel dev`를 사용합니다.
+OpenAI API 호출은 `/api/recommend` 서버 함수에서 처리합니다. 로컬에서는 Vite 개발 서버가 같은 경로를 연결하므로 `.env.example`을 참고해 `.env`에 서버 환경변수를 설정한 뒤 `npm run dev`를 실행하면 됩니다. Vercel 배포 환경에서는 `api/recommend.js`가 Vercel Function으로 실행됩니다.
 
 ```bash
 OPENAI_API_KEY=your_openai_api_key_here

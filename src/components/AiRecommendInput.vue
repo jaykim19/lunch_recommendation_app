@@ -35,7 +35,6 @@ defineExpose({
 
 function selectQuickKeyword(item) {
   keyword.value = item.text;
-  handleRecommend();
 }
 
 async function handleRecommend() {
@@ -60,6 +59,7 @@ async function handleRecommend() {
 
   try {
     const result = await fetchAiRecommendation(query, { signal: controller.signal });
+    keyword.value = "";
     emit("finish-ai-pick", { requestId, success: true, food: result });
   } catch (error) {
     if (error.name === "AbortError") {
