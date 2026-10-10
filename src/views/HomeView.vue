@@ -246,7 +246,7 @@ function onEscapeKeyDown(event) {
 
     <footer class="app-footer">
       <!-- <p class="creator-text">기획/개발: 김지영, 윤혜준</p> -->
-      <p class="copyright-text">Copyright &copy; 2026 브릿지듀오  All rights reserved.</p>
+      <!-- <p class="copyright-text">Copyright &copy; 2026 브릿지듀오  All rights reserved.</p> -->
     </footer>
   </main>
 </template>
